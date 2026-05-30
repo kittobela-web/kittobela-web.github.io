@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kittos — Cat Boutique</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream:#f7f3ee; --offwhite:#faf8f5; --beige:#e8ddd0;
+      --tan:#d4c4b0; --brown:#8b6f56; --darkbrown:#5c4333;
+      --accent:#c4855a; --text:#3d2e22; --muted:#9e8878;
+      --shadow:rgba(92,67,51,0.12);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--offwhite);color:var(--text);min-height:100vh}
+
+    nav{background:var(--cream);border-bottom:1.5px solid var(--beige);position:sticky;top:0;z-index:100;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;height:72px}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;color:var(--darkbrown);text-decoration:none;letter-spacing:-0.5px}
+    .nav-logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2rem;align-items:center}
+    .nav-links a{text-decoration:none;color:var(--brown);font-size:0.9rem;font-weight:500;letter-spacing:0.5px;transition:color .2s}
+    .nav-links a:hover{color:var(--accent)}
+    .nav-cart{background:var(--darkbrown);color:var(--cream)!important;padding:8px 18px;border-radius:30px;font-size:0.85rem!important;transition:background .2s!important}
+    .nav-cart:hover{background:var(--accent)!important}
+
+    /* HERO */
+    .hero{background:var(--cream);display:grid;grid-template-columns:1fr 1fr;min-height:520px;overflow:hidden}
+    .hero-left{padding:80px 5vw 80px 8vw;display:flex;flex-direction:column;justify-content:center}
+    .hero-eyebrow{font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:16px}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.8rem);line-height:1.1;color:var(--darkbrown);margin-bottom:20px}
+    .hero-title em{color:var(--accent);font-style:italic}
+    .hero-sub{color:var(--muted);font-size:1rem;line-height:1.7;max-width:400px;margin-bottom:36px}
+    .hero-btn{display:inline-block;background:var(--accent);color:white;padding:14px 34px;border-radius:40px;text-decoration:none;font-weight:500;font-size:0.95rem;transition:all .25s;box-shadow:0 4px 18px rgba(196,133,90,0.35);align-self:flex-start}
+    .hero-btn:hover{background:var(--darkbrown);transform:translateY(-2px)}
+    .hero-right{background:var(--beige);position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr ;gap:0px}
+    .hero-img-cell{overflow:hidden}
+    .hero-img-cell img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .hero-img-cell:hover img{transform:scale(1.06)}
+    .hero-img-cell:first-child{grid-row:span 2}
+
+    /* SEARCH */
+    .search-bar{max-width:600px;margin:-28px auto 0;position:relative;z-index:10;padding:0 5vw}
+    .search-bar input{width:100%;padding:18px 60px 18px 24px;border-radius:50px;border:2px solid var(--beige);background:white;font-family:'DM Sans',sans-serif;font-size:0.95rem;color:var(--text);box-shadow:0 8px 30px var(--shadow);outline:none;transition:border .2s,box-shadow .2s}
+    .search-bar input:focus{border-color:var(--accent);box-shadow:0 8px 30px rgba(196,133,90,0.18)}
+    .search-bar input::placeholder{color:var(--muted)}
+    .search-icon{position:absolute;right:calc(5vw + 20px);top:50%;transform:translateY(-50%);color:var(--accent);font-size:1.1rem;pointer-events:none}
+
+    /* CATEGORIES */
+    .categories{padding:70px 8vw 36px}
+    .section-label{font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:10px}
+    .section-title{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--darkbrown);margin-bottom:32px}
+    .cat-grid{display:flex;gap:10px;flex-wrap:wrap}
+    .cat-pill{padding:10px 22px;border-radius:30px;border:1.5px solid var(--beige);background:var(--cream);color:var(--brown);font-size:0.88rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .cat-pill:hover,.cat-pill.active{background:var(--darkbrown);color:var(--cream);border-color:var(--darkbrown)}
+
+    /* PRODUCTS */
+    .products-section{padding:20px 8vw 80px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+
+    .product-card{background:var(--cream);border-radius:18px;overflow:hidden;border:1.5px solid var(--beige);transition:transform .25s,box-shadow .25s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+    .product-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px var(--shadow)}
+
+    /* --- CARD GALLERY --- */
+    .card-gallery{position:relative;height:230px;overflow:hidden;background:var(--beige)}
+    .card-gallery img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
+    .card-gallery img.active{opacity:1}
+    .card-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--accent);color:white;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:600}
+    /* image dots */
+    .card-dots{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:3}
+    .card-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.55);cursor:pointer;transition:background .2s,transform .2s;border:none;outline:none}
+    .card-dot.active{background:white;transform:scale(1.3)}
+    /* colour swatches strip at bottom of card image */
+    .card-swatch-bar{position:absolute;bottom:0;left:0;right:0;z-index:3;background:linear-gradient(to top,rgba(60,38,22,0.55),transparent);padding:8px 12px;display:flex;gap:6px;align-items:center}
+    .card-swatch{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.7);cursor:pointer;transition:transform .2s,border-color .2s;flex-shrink:0}
+    .card-swatch:hover{transform:scale(1.2)}
+    .card-swatch.active{border-color:white;transform:scale(1.25);box-shadow:0 0 0 2px rgba(255,255,255,0.4)}
+    .card-swatch-label{color:rgba(255,255,255,0.85);font-size:0.7rem;font-weight:500;margin-left:2px}
+
+    .product-info{padding:16px 18px 18px}
+    .product-cat{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:5px}
+    .product-name{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--darkbrown);margin-bottom:6px}
+    .product-desc{font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:12px}
+    .product-footer{display:flex;align-items:center;justify-content:space-between}
+    .product-price{font-size:1.05rem;font-weight:600;color:var(--darkbrown)}
+    .product-btn{background:var(--tan);color:var(--darkbrown);border:none;padding:7px 16px;border-radius:20px;font-size:0.8rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s,color .2s}
+    .product-btn:hover{background:var(--accent);color:white}
+
+    .no-results{text-align:center;padding:60px 20px;display:none}
+    .no-results p{color:var(--muted);font-size:1rem;margin-top:12px}
+
+    #about{background:var(--cream);padding:70px 8vw;text-align:center}
+    #about h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--darkbrown);margin-bottom:16px}
+    #about p{color:var(--muted);max-width:520px;margin:0 auto 30px;line-height:1.8;font-size:0.95rem}
+
+    footer{background:var(--darkbrown);color:var(--tan);padding:50px 8vw 30px}
+    .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:40px}
+    .footer-brand{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--cream);margin-bottom:12px}
+    .footer-brand span{color:var(--accent)}
+    .footer-tagline{color:var(--muted);font-size:0.88rem;line-height:1.6}
+    .footer-col h4{color:var(--cream);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+    .footer-col a{display:block;color:var(--muted);text-decoration:none;font-size:0.88rem;margin-bottom:10px;transition:color .2s}
+    .footer-col a:hover{color:var(--cream)}
+    .footer-bottom{border-top:1px solid rgba(212,196,176,0.2);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    .footer-bottom p{font-size:0.82rem;color:var(--muted)}
+    .fb-link{display:inline-flex;align-items:center;gap:8px;background:#1877F2;color:white;padding:8px 18px;border-radius:24px;text-decoration:none;font-size:0.85rem;font-weight:500;transition:opacity .2s}
+    .fb-link:hover{opacity:0.85}
+
+    .fade-in{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+    .fade-in.visible{opacity:1;transform:translateY(0)}
+
+    @media(max-width:768px){
+      .hero{grid-template-columns:1fr;min-height:auto}
+      .hero-right{height:200px;grid-template-columns:1fr 1fr;grid-template-rows:1fr}
+      .hero-img-cell:first-child{grid-row:span 1}
+      .footer-top{grid-template-columns:1fr;gap:24px}
+      .products-section,.categories{padding-left:4vw;padding-right:4vw}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Kittos<span>.</span></a>
+  <div class="nav-links">
+    <a href="#products">Shop</a>
+    <a href="#about">About</a>
+    <a href="https://www.facebook.com" target="_blank" class="nav-cart">Order via FB →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <h1 class="hero-title">The best<br><em>accessories</em><br>for your cat.</h1>
+    <p class="hero-sub">Handpicked toys, accessories & essentials for cats who deserve the very best. Every product chosen with love.</p>
+    <a href="#products" class="hero-btn">Shop the Collection</a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-cell"><img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&q=80" alt="Cat with toy" loading="lazy"></div>
+    <div class="hero-img-cell"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&q=80" alt="Cat" loading="lazy"></div>
+  </div>
+</section>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search for toys, beds, collars…" />
+  <span class="search-icon">🔍</span>
+</div>
+
+<section class="categories" id="products">
+  <p class="section-label">Browse by type</p>
+  <h2 class="section-title">What are you looking for?</h2>
+  <div class="cat-grid">
+    <button class="cat-pill active" data-cat="all">All Products</button>
+    <button class="cat-pill" data-cat="toys">Toys</button>
+    <button class="cat-pill" data-cat="beds">Beds & Comfort</button>
+    <button class="cat-pill" data-cat="accessories">Accessories</button>
+    <button class="cat-pill" data-cat="grooming">Grooming</button>
+    <button class="cat-pill" data-cat="feeding">Feeding</button>
+  </div>
+</section>
+
+<section class="products-section">
+  <div class="products-grid" id="productsGrid"></div>
+  <div class="no-results" id="noResults">
+    <div style="font-size:48px">🐾</div>
+    <p>No products found. Try a different search!</p>
+  </div>
+</section>
+
+<section id="about">
+  <p class="section-label" style="text-align:center">Our story</p>
+  <h2>Born from a love of cats</h2>
+  <p>Kittos was started by cat lovers, for cat lovers. We curate only the safest, most delightful products — because your cat isn't just a pet, they're family. Browse, find your favourites, and order through our Facebook page.</p>
+  <a href="https://www.facebook.com" target="_blank" class="hero-btn" style="display:inline-block">Visit us on Facebook</a>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">Kittos<span>.</span></div>
+      <p class="footer-tagline">Premium cat products curated with love. Browse online, order through Facebook.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="#" onclick="filterCat('toys');return false">Toys</a>
+      <a href="#" onclick="filterCat('beds');return false">Beds & Comfort</a>
+      <a href="#" onclick="filterCat('accessories');return false">Accessories</a>
+      <a href="#" onclick="filterCat('grooming');return false">Grooming</a>
+      <a href="#" onclick="filterCat('feeding');return false">Feeding</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <a href="https://www.facebook.com" target="_blank">Facebook Page</a>
+      <a href="https://www.facebook.com" target="_blank">Send us a message</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Kittos Cat Boutique. All rights reserved.</p>
+    <a class="fb-link" href="https://www.facebook.com" target="_blank">
+      <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07z"/></svg>
+      Order on Facebook
+    </a>
+  </div>
+</footer>
+
+<script>
+const products = [
+  {
+    id:1, name:"Fur removing glove ", cat:"accessories", badge:"Best Seller",
+    desc:"Gently remove loose fur while petting your cat. One size fits all, with a comfortable adjustable strap. Perfect for reducing shedding and keeping your home fur-free.",
+    price:"৳ 100",
+    colours:[
+      { name:"Black", hex:"#333",
+        images:[
+          "images/Fur-remover/image1.jpg",
+          "images/Fur-remover/image2.jpg",
+          "images/Fur-remover/image3.jpg",
+          "images/Fur-remover/image4.jpg",
+          "images/Fur-remover/image5.jpg",
+          "images/Fur-remover/image6.jpg"
+        ]
+      }
+    ]
+  },
+  {
+    id:2, name:"Bath Brush", cat:"accessories", badge:"New Arrival",
+    desc:"Make bath time a breeze with our gentle yet effective cat bath brush. Designed to create a rich lather and reach every inch of your cat's fur, it turns grooming into a spa-like experience. Perfect for keeping your feline friend clean and happy.",
+    price:"৳ 70",
+    colours:[
+      { name:"Product", images:["images/Bath-Brush/image1.jpg","images/Bath-Brush/image2.jpg","images/Bath-Brush/image3.jpg"] },
+      { name:"Pink", hex:"#c96080", images:["images/Bath-Brush/pink.jpg","images/Bath-Brush/pink.jpg","images/Bath-Brush/pink.jpg",] },
+       { name:"Blue", hex:"#4070c9", images:["images/Bath-Brush/blue.jpg","images/Bath-Brush/blue.jpg","images/Bath-Brush/blue.jpg",] },
+       { name:"Green", hex:"#40c940", images:["images/Bath-Brush/green.jpg","images/Bath-Brush/green.jpg","images/Bath-Brush/green.jpg",] },
+     ]
+  }
+];
+
+// per-card state: { colourIdx, imgIdx }
+const cardState = {};
+let activeFilter = 'all';
+
+function renderProducts(list) {
+  const grid = document.getElementById('productsGrid');
+  const noRes = document.getElementById('noResults');
+  grid.innerHTML = '';
+  if (!list.length) { noRes.style.display = 'block'; return; }
+  noRes.style.display = 'none';
+
+  list.forEach((p, i) => {
+    cardState[p.id] = { colourIdx: 0, imgIdx: 0 };
+
+    const a = document.createElement('a');
+    a.className = 'product-card fade-in';
+    a.href = `product.html?id=${p.id}`;
+    a.style.transitionDelay = `${i * 0.05}s`;
+    a.dataset.pid = p.id;
+
+    a.innerHTML = buildCardHTML(p);
+    grid.appendChild(a);
+
+    // dot clicks
+    a.querySelectorAll('.card-dot').forEach(dot => {
+      dot.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        setCardImg(p.id, +dot.dataset.idx);
+      });
+    });
+
+    // swatch clicks
+    a.querySelectorAll('.card-swatch').forEach(sw => {
+      sw.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        setCardColour(p.id, +sw.dataset.cidx);
+      });
+    });
+
+    // hover auto-cycle images
+    let timer;
+    const gallery = a.querySelector('.card-gallery');
+    gallery.addEventListener('mouseenter', () => {
+      const imgs = p.colours[cardState[p.id].colourIdx].images;
+      if (imgs.length < 2) return;
+      timer = setInterval(() => {
+        const next = (cardState[p.id].imgIdx + 1) % imgs.length;
+        setCardImg(p.id, next);
+      }, 1300);
+    });
+    gallery.addEventListener('mouseleave', () => clearInterval(timer));
+
+    requestAnimationFrame(() => requestAnimationFrame(() => a.classList.add('visible')));
+  });
+}
+
+function buildCardHTML(p) {
+  const col = p.colours[0];
+  const imgs = col.images;
+  const imgsHtml = imgs.map((src, ii) =>
+    `<img src="${src}" alt="${p.name}" class="${ii===0?'active':''}" loading="lazy">`
+  ).join('');
+  const dotsHtml = imgs.length > 1
+    ? `<div class="card-dots">${imgs.map((_,di) =>
+        `<button class="card-dot${di===0?' active':''}" data-idx="${di}"></button>`
+      ).join('')}</div>`
+    : '';
+  const swatchesHtml = p.colours.map((c, ci) =>
+    `<span class="card-swatch${ci===0?' active':''}" data-cidx="${ci}" style="background:${c.hex}" title="${c.name}"></span>`
+  ).join('');
+  return `
+    <div class="card-gallery" data-pid="${p.id}">
+      ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+      ${imgsHtml}
+      ${dotsHtml}
+      <div class="card-swatch-bar">
+        ${swatchesHtml}
+        <span class="card-swatch-label">${col.name}</span>
+      </div>
+    </div>
+    <div class="product-info">
+      <p class="product-cat">${p.cat}</p>
+      <h3 class="product-name">${p.name}</h3>
+      <p class="product-desc">${p.desc}</p>
+      <div class="product-footer">
+        <span class="product-price">${p.price}</span>
+        <button class="product-btn">View →</button>
+      </div>
+    </div>`;
+}
+
+function getCardEl(pid) {
+  return document.querySelector(`.product-card[data-pid="${pid}"]`) ||
+         document.querySelector(`a[href="product.html?id=${pid}"]`);
+}
+
+function setCardImg(pid, idx) {
+  cardState[pid].imgIdx = idx;
+  const card = getCardEl(pid);
+  if (!card) return;
+  card.querySelectorAll('.card-gallery img').forEach((img, i) => img.classList.toggle('active', i === idx));
+  card.querySelectorAll('.card-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+function setCardColour(pid, cidx) {
+  const p = products.find(x => x.id === pid);
+  if (!p) return;
+  cardState[pid].colourIdx = cidx;
+  cardState[pid].imgIdx = 0;
+  const card = getCardEl(pid);
+  if (!card) return;
+  const col = p.colours[cidx];
+  const gallery = card.querySelector('.card-gallery');
+  // remove old images
+  gallery.querySelectorAll('img').forEach(el => el.remove());
+  gallery.querySelectorAll('.card-dots').forEach(el => el.remove());
+  // insert new images
+  col.images.forEach((src, ii) => {
+    const img = document.createElement('img');
+    img.src = src; img.alt = p.name; img.loading = 'lazy';
+    if (ii === 0) img.classList.add('active');
+    gallery.insertBefore(img, gallery.querySelector('.card-swatch-bar'));
+  });
+  // rebuild dots
+  if (col.images.length > 1) {
+    const dotsDiv = document.createElement('div');
+    dotsDiv.className = 'card-dots';
+    dotsDiv.innerHTML = col.images.map((_,di) =>
+      `<button class="card-dot${di===0?' active':''}" data-idx="${di}"></button>`
+    ).join('');
+    gallery.insertBefore(dotsDiv, gallery.querySelector('.card-swatch-bar'));
+    dotsDiv.querySelectorAll('.card-dot').forEach(dot => {
+      dot.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setCardImg(pid, +dot.dataset.idx); });
+    });
+  }
+  // update swatches
+  card.querySelectorAll('.card-swatch').forEach((sw, i) => sw.classList.toggle('active', i === cidx));
+  // update label
+  const lbl = card.querySelector('.card-swatch-label');
+  if (lbl) lbl.textContent = col.name;
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  return products.filter(p => {
+    const mc = activeFilter === 'all' || p.cat === activeFilter;
+    const mq = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q);
+    return mc && mq;
+  });
+}
+
+function filterCat(cat) {
+  activeFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  renderProducts(getFiltered());
+  document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+}
+
+document.querySelectorAll('.cat-pill').forEach(btn => btn.addEventListener('click', () => filterCat(btn.dataset.cat)));
+document.getElementById('searchInput').addEventListener('input', () => renderProducts(getFiltered()));
+renderProducts(products);
+</script>
+</body>
+</html>
